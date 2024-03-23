@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:tennis_court_scheduling/domain/repositories/weather_repository.dart';
+import 'package:tennis_court_scheduling/presentation/providers/courts/courts_providers.dart';
 
 import '../../../domain/entities/weather.dart';
 import '../../../infraestructure/repositories/weather_repository_impl.dart';
@@ -11,12 +12,18 @@ import '../../../shared/InputsValidations/name.dart';
 final courtFormProvider =
     StateNotifierProvider.autoDispose<CourtFormNotifier, CourtFormState>((ref) {
   final weatherRepository = WeatherRepositoryImpl();
-  return CourtFormNotifier(weatherRepository: weatherRepository);
+  final saveCourtScheduleCallback =
+      ref.watch(courtProvider.notifier).saveCourtSchedule;
+  return CourtFormNotifier(
+      saveCourtScheduleCallback: saveCourtScheduleCallback,
+      weatherRepository: weatherRepository);
 });
 
 class CourtFormNotifier extends StateNotifier<CourtFormState> {
   final WeatherRepository weatherRepository;
+  final Function(dynamic, dynamic, dynamic) saveCourtScheduleCallback;
   CourtFormNotifier({
+    required this.saveCourtScheduleCallback,
     required this.weatherRepository,
   }) : super(CourtFormState());
 
@@ -32,7 +39,8 @@ class CourtFormNotifier extends StateNotifier<CourtFormState> {
     try {
       state = state.copyWith(
           isPosting: false, isFormPosted: false, errorMessage: "");
-      print('call to create schedule');
+      saveCourtScheduleCallback(
+          state.name.value, state.date.value, state.courtSelect.value);
     } catch (e) {
       state = state.copyWith(
           isFormPosted: false, isPosting: false, errorMessage: "");

@@ -16,6 +16,7 @@ class ScheduleCourtForm extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return SafeArea(
         child: Scaffold(
+            resizeToAvoidBottomInset: false,
             appBar: AppBar(
               title: const Text('Agendamientos'),
             ),
@@ -61,9 +62,9 @@ class _newScheduleForm extends ConsumerWidget {
     final dropDownSelectCourt =
         ref.watch(courtFormProvider).dropDownSelectCourt;
 
-    final List<Courts> courtList = ref.watch(courtProvider).courtsData;
+    final List<Courts>? courtList = ref.watch(courtProvider).courtsData;
     List dropDownSelectValue = ["Canchas de tenis"];
-    courtList.forEach((court) {
+    courtList?.forEach((court) {
       dropDownSelectValue.add(court.name);
     });
 

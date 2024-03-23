@@ -1,6 +1,7 @@
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tennis_court_scheduling/domain/entities/courts.dart';
+import 'package:tennis_court_scheduling/domain/entities/courtsSchedule.dart';
 
 import '../../domain/datasources/local_storage_datasource.dart';
 
@@ -12,7 +13,7 @@ class LocalStorageDatasourceImpl extends LocalStorageDatasource {
   Future<Isar> openDB() async {
     final directory = await getApplicationDocumentsDirectory();
     if (Isar.instanceNames.isEmpty) {
-      return await Isar.open([CourtsSchema],
+      return await Isar.open([CourtsSchema, CourtsScheduleSchema],
           inspector: true, directory: directory.path);
     }
     return Future.value(Isar.getInstance());
@@ -55,5 +56,29 @@ class LocalStorageDatasourceImpl extends LocalStorageDatasource {
   Future<List<Courts>> getAllCourts() async {
     final isar = await db;
     return isar.courts.where().findAll();
+  }
+
+  @override
+  Future<void> saveCourtSchedule(String name, String date, String court) async {
+    final isar = await db;
+
+    // meter if para saber si ya se guardo otra de esas
+
+    Map<String, dynamic> courtsScheduleListData = {
+      'name': name,
+      "scheduled": 1,
+      "date": date,
+      "courtName": court,
+    };
+
+    final dataScheduleCourt = CourtsSchedule.fromJson(courtsScheduleListData);
+
+    isar.writeTxn(() => isar.courtsSchedules.put(dataScheduleCourt));
+  }
+
+  @override
+  Future<List<CourtsSchedule>> getAllCourtsScheduled() async {
+    final isar = await db;
+    return isar.courtsSchedules.where().findAll();
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tennis_court_scheduling/domain/entities/courts.dart';
+import 'package:tennis_court_scheduling/domain/entities/courtsSchedule.dart';
 import 'package:tennis_court_scheduling/domain/repositories/local_storage_repository.dart';
 import 'package:tennis_court_scheduling/infraestructure/repositories/local_storage_repository_impl.dart';
 import '../../../domain/repositories/court_repository.dart';
@@ -26,32 +28,49 @@ class CourtNotifier extends StateNotifier<CourtState> {
   Future starterCourts() async {
     state = state.copyWith(errorMessage: '', isLoading: true);
     try {
-      
-      final starterInitialCourts =
-          await localStorageRepository.buildStarterCourts();
-      final getCourts = await localStorageRepository.getAllCourts();
-
-      state = state.copyWith(courtsData: getCourts, isLoading: false);
+      await localStorageRepository.buildStarterCourts();
+      final List<Courts> getCourts =
+          await localStorageRepository.getAllCourts();
+      final getAllCourtsSchedule =
+          await localStorageRepository.getAllCourtsScheduled();
+      state = state.copyWith(
+          courtsData: getCourts, courtsScheduleData: getAllCourtsSchedule);
+      state = state.copyWith(
+        isLoading: false,
+      );
     } catch (e) {
       state = state.copyWith(
           errorMessage: "Hubo un error cargando las canchas, intenta de nuevo",
           isLoading: false);
     }
   }
+
+  Future saveCourtSchedule(name, date, court) async {
+    state = state.copyWith(errorMessage: '', isLoading: true);
+    try {
+      await localStorageRepository.saveCourtSchedule(name, date, court);
+      state = state.copyWith(errorMessage: '', isLoading: false);
+    } catch (e) {
+      state = state.copyWith(
+          errorMessage: "Hubo un error guardando", isLoading: false);
+    }
+  }
 }
 
 class CourtState {
-  final dynamic courtsData;
-
+  List<Courts>? courtsData;
+  List<CourtsSchedule>? courtsScheduleData;
   final bool isLoading;
   final String errorMessage;
   CourtState({
     this.courtsData,
+    this.courtsScheduleData,
     this.isLoading = false,
     this.errorMessage = '',
   });
   CourtState copyWith({
-    dynamic courtsData,
+    List<Courts>? courtsData,
+    List<CourtsSchedule>? courtsScheduleData,
     bool? isLoading,
     String? errorMessage,
   }) =>
@@ -59,5 +78,6 @@ class CourtState {
         courtsData: courtsData ?? this.courtsData,
         isLoading: isLoading ?? this.isLoading,
         errorMessage: errorMessage ?? this.errorMessage,
+        courtsScheduleData: courtsScheduleData ?? this.courtsScheduleData,
       );
 }
