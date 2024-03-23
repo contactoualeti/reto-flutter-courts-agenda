@@ -10,8 +10,5 @@ class WeaterMapper {
       timezone: weatherResponse.timezone,
       timezoneAbbreviation: weatherResponse.timezoneAbbreviation,
       elevation: weatherResponse.elevation,
-      currentUnits: weatherResponse.currentUnits,
-      current: weatherResponse.current,
-      dailyUnits: weatherResponse.dailyUnits,
-      daily: weatherResponse.daily);
+      daily: weatherResponse.daily!);
 }

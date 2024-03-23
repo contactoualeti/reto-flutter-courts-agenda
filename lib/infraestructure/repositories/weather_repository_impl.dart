@@ -1,14 +1,16 @@
-import 'package:tennis_court_scheduling/infraestructure/datasources/courts_datasource_impl.dart';
+import '../../domain/datasources/weather_datasource.dart';
 import '../../domain/entities/weather.dart';
 import '../../domain/repositories/weather_repository.dart';
+import '../datasources/weater_datasource_impl.dart';
 
 class WeatherRepositoryImpl extends WeatherRepository {
-  final WeatherDatasource datasource;
+  final WeatherDatasource weatherDatasource;
 
-  WeatherRepositoryImpl(this.datasource);
+  WeatherRepositoryImpl([WeatherDatasource? weatherDatasource])
+      : weatherDatasource = weatherDatasource ?? WeatherDatasourceImpl();
 
   @override
-  Future<Weather> getWeather({int page = 1}) {
-    return datasource.getWeather(page: page);
+  Future<Weather> getWeather(String date) {
+    return weatherDatasource.getWeather(date);
   }
 }

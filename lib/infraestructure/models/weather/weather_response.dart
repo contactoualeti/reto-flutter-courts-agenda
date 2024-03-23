@@ -7,10 +7,7 @@ class WeatherResponse {
   final int? utcOffsetSeconds;
   final String? timezone;
   final String? timezoneAbbreviation;
-  final int? elevation;
-  CurrentUnits currentUnits;
-  final Current? current;
-  final DailyUnits? dailyUnits;
+  final double? elevation;
   final Daily? daily;
 
   WeatherResponse({
@@ -21,26 +18,19 @@ class WeatherResponse {
     this.timezone,
     this.timezoneAbbreviation,
     this.elevation,
-    required this.currentUnits,
-    this.current,
-    this.dailyUnits,
     this.daily,
   });
 
   factory WeatherResponse.fromJson(Map<String, dynamic> json) =>
       WeatherResponse(
-        latitude: json["latitude"]?.toDouble(),
-        longitude: json["longitude"]?.toDouble(),
-        generationtimeMs: json["generationtime_ms"]?.toDouble(),
-        utcOffsetSeconds: json["utc_offset_seconds"],
-        timezone: json["timezone"],
-        timezoneAbbreviation: json["timezone_abbreviation"],
-        elevation: json["elevation"],
-        currentUnits: json["current_units"],
-        current: json["current"],
-        dailyUnits: json["daily_units"],
-        daily: json["daily"],
-      );
+          latitude: json["latitude"]?.toDouble(),
+          longitude: json["longitude"]?.toDouble(),
+          generationtimeMs: json["generationtime_ms"]?.toDouble(),
+          utcOffsetSeconds: json["utc_offset_seconds"],
+          timezone: json["timezone"],
+          timezoneAbbreviation: json["timezone_abbreviation"],
+          elevation: json["elevation"],
+          daily: json["daily"] == null ? null : Daily.fromJson(json));
 
   Map<String, dynamic> toJson() => {
         "latitude": latitude,
@@ -50,9 +40,25 @@ class WeatherResponse {
         "timezone": timezone,
         "timezone_abbreviation": timezoneAbbreviation,
         "elevation": elevation,
-        "current_units": currentUnits,
-        "current": current,
-        "daily_units": dailyUnits,
         "daily": daily,
       };
 }
+
+// class DailyResponse {
+//   final List<String>? time;
+//   final List<int>? precipitationProbabilityMax;
+
+//   DailyResponse({
+//     this.time,
+//     this.precipitationProbabilityMax,
+//   });
+
+//   factory DailyResponse.fromJson(Map<String, dynamic> json) {
+//     return DailyResponse(
+//       time: json['time'] != null ? List<String>.from(json['time']) : null,
+//       precipitationProbabilityMax: json['precipitation_probability_max'] != null
+//           ? List<int>.from(json['precipitation_probability_max'])
+//           : null,
+//     );
+//   }
+// }

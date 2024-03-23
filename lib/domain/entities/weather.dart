@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Weather {
   final double? latitude;
   final double? longitude;
@@ -5,11 +7,8 @@ class Weather {
   final int? utcOffsetSeconds;
   final String? timezone;
   final String? timezoneAbbreviation;
-  final int? elevation;
-  final CurrentUnits? currentUnits;
-  final Current? current;
-  final DailyUnits? dailyUnits;
-  final Daily? daily;
+  final double? elevation;
+  final Daily daily;
 
   Weather({
     this.latitude,
@@ -19,65 +18,23 @@ class Weather {
     this.timezone,
     this.timezoneAbbreviation,
     this.elevation,
-    this.currentUnits,
-    this.current,
-    this.dailyUnits,
-    this.daily,
-  });
-}
-
-class Current {
-  final String? time;
-  final int? interval;
-  final double? temperature2M;
-  final int? precipitation;
-  final int? rain;
-  final double? windSpeed10M;
-
-  Current({
-    this.time,
-    this.interval,
-    this.temperature2M,
-    this.precipitation,
-    this.rain,
-    this.windSpeed10M,
-  });
-}
-
-class CurrentUnits {
-  final String? time;
-  final String? interval;
-  final String? temperature2M;
-  final String? precipitation;
-  final String? rain;
-  final String? windSpeed10M;
-
-  CurrentUnits({
-    this.time,
-    this.interval,
-    this.temperature2M,
-    this.precipitation,
-    this.rain,
-    this.windSpeed10M,
+    required this.daily,
   });
 }
 
 class Daily {
   final List<DateTime>? time;
-  final List<int>? precipitationProbabilityMax;
+  final List<int>? precipitation_probability_max;
 
   Daily({
     this.time,
-    this.precipitationProbabilityMax,
+    this.precipitation_probability_max,
   });
-}
 
-class DailyUnits {
-  final String? time;
-  final String? precipitationProbabilityMax;
-
-  DailyUnits({
-    this.time,
-    this.precipitationProbabilityMax,
-  });
+  factory Daily.fromJson(Map<String, dynamic> json) {
+    return Daily(
+        time: [DateTime.now()],
+        precipitation_probability_max:
+            List<int>.from(json['daily']['precipitation_probability_max']));
+  }
 }
