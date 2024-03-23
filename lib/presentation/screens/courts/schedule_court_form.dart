@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../domain/entities/courts.dart';
+import '../../../domain/entities/weather.dart';
 import '../../providers/courts/court_form_provider.dart';
 import '../../providers/courts/courts_providers.dart';
 import '../widgets/custom_filled_button.dart';
@@ -34,6 +35,8 @@ class _newScheduleForm extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final newScheduleForm = ref.watch(courtFormProvider);
+    final Weather? weatherResponse =
+        ref.watch(courtFormProvider).weatherResponse;
     DateTime selectedDate = DateTime.now();
     _selectDate(BuildContext context) async {
       final DateTime? picked = await showDatePicker(
@@ -63,8 +66,6 @@ class _newScheduleForm extends ConsumerWidget {
     courtList.forEach((court) {
       dropDownSelectValue.add(court.name);
     });
-
-    final textStyles = Theme.of(context).textTheme;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -111,6 +112,26 @@ class _newScheduleForm extends ConsumerWidget {
                 onPressed: () => _selectDate(context),
               )),
           const SizedBox(height: 10),
+          LayoutBuilder(builder: (context, constraints) {
+            if (weatherResponse == null) {
+              return const Text(
+                'Selecciona una fecha para saber la probabilidad de lluvia',
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.red),
+              );
+            } else {
+              return Text(
+                'Probabilidad de lluvia ${weatherResponse.daily.precipitation_probability_max.toString()} %',
+                style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.blue),
+              );
+            }
+          }),
+          const SizedBox(height: 20),
           SizedBox(
               width: double.infinity,
               height: 60,

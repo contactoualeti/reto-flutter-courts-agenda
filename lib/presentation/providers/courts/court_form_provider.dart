@@ -23,8 +23,7 @@ class CourtFormNotifier extends StateNotifier<CourtFormState> {
   onFormSubmit() async {
     await _touchEveryField();
     if (!state.isValid) {
-      state =
-          state.copyWith(errorMessage: "Hubo un error validando el formulario");
+      state = state.copyWith(errorMessage: "Falta validar al menos 1 dato");
       state = state.copyWith(errorMessage: "");
       return;
     }
@@ -42,10 +41,10 @@ class CourtFormNotifier extends StateNotifier<CourtFormState> {
 
   onSelectDateChange(String value) async {
     final newDate = Date.dirty(value);
-    final Future<Weather> rainProbability = weatherRepository.getWeather(value);
-    print(rainProbability);
+    final Weather getWeather = await weatherRepository.getWeather(value);
     state = state.copyWith(
         date: newDate,
+        weatherResponse: getWeather,
         isValid: Formz.validate([newDate, state.courtSelect, state.name]));
   }
 
@@ -84,6 +83,7 @@ class CourtFormState {
   final Date date;
   final String errorMessage;
   final String dropDownSelectCourt;
+  final Weather? weatherResponse;
 
   CourtFormState({
     this.isPosting = false,
@@ -94,6 +94,7 @@ class CourtFormState {
     this.date = const Date.pure(),
     this.errorMessage = '',
     this.dropDownSelectCourt = '',
+    this.weatherResponse,
   });
 
   CourtFormState copyWith({
@@ -105,6 +106,7 @@ class CourtFormState {
     Date? date,
     String? errorMessage,
     String? dropDownSelectCourt,
+    Weather? weatherResponse,
   }) =>
       CourtFormState(
         isPosting: isPosting ?? this.isPosting,
@@ -115,6 +117,7 @@ class CourtFormState {
         date: date ?? this.date,
         errorMessage: errorMessage ?? this.errorMessage,
         dropDownSelectCourt: dropDownSelectCourt ?? this.dropDownSelectCourt,
+        weatherResponse: weatherResponse ?? this.weatherResponse,
       );
 
   @override
