@@ -22,13 +22,21 @@ Se utilizo un proveedor de datos externos para la consulta de estado del tiempo.
 Alcance logrado:
 
 Alcance a terminar el template con la arquitectura limpia.
+
 Alcance a crear los Mappers
+
 Alcance a terminar la implementacion de ISAR como Base de datos local
+
 Alcance a implementar Riverpod para los estados de los widgets.
+
 Alcance a implementar DIO como manejador de las peticiones HTTP.
+
 Alcance a crear las capas de Presentacio, Infraestructura y Dominio.
+
 Alcance a crear 2 pantallas para manejar la logica de negocio.
+
 Alcance a crear, editar y consultar las canchas, agendar nuevas canchas.
+
 Alcance a crear la vista de canchas.
 
 Pendientes
